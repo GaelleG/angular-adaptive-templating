@@ -65,7 +65,7 @@ These are available in your module's config block.
 Register a new test, or replace an existing one.
 
     @param {string} name The name by which determines the pattern.
-    @param {boolean|function} test The actual test, as boolean or function.
+    @param {boolean|function|string} test The actual test, as boolean, function or string.
     @returns {this} Reference to this, to enable method chaining.
 
 ### {function} removeTest({string} name)
@@ -104,6 +104,14 @@ Callback to rewrite the URL when a test fails. Override it to suit your needs.
     @param {string} url The current URL.
     @param {string} match The matching test pattern.
     @param {string} testname The name of the test.
+    @returns {string} The new URL.
+
+### {function} whenString({string} url, {string} match, {string} testvalue)
+Callback to rewrite the URL when a test is a string. Override it to suit your needs.
+
+    @param {string} url The current URL.
+    @param {string} match The matching test pattern.
+    @param {string} testvalue The value of the test.
     @returns {string} The new URL.
 
 ### {function} rewriteUrl({string} templateUrl)

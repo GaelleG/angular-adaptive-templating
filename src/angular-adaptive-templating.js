@@ -10,7 +10,7 @@
        * Register a new test, or replace an existing one.
        *
        * @param {string} name The name by which determines the pattern.
-       * @param {boolean|function} test The actual test, as boolean or function.
+       * @param {boolean|function|string} test The actual test, as boolean, function or string.
        * @returns {this} Reference to this, to enable method chaining.
        */
       this.addTest = function (name, test) {
@@ -47,9 +47,6 @@
       /**
        * Reformats the final URL. Override it if necessary.
        * The default implementation removes superfluous slashes and dots.
-       *
-       * @param {string} url The original URL.
-       * @returns {string} The reformatted URL.
        */
       this.normalizeUrl = (function () {
         var slashDot = /\/\.+/g;
@@ -68,7 +65,7 @@
        *
        * @param {string} url The current URL.
        * @param {string} match The matching test pattern.
-       * @param {string} testname The name of the test.
+       * @param {string} testname The name of the test (without '?').
        * @returns {string} The new URL.
        */
       this.whenTrue = function (url, match, testname) {
@@ -80,11 +77,23 @@
        *
        * @param {string} url The current URL.
        * @param {string} match The matching test pattern.
-       * @param {string} testname The name of the test.
+       * @param {string} testname The name of the test (without '?').
        * @returns {string} The new URL.
        */
       this.whenFalse = function (url, match/*, testname*/) {
         return url.replace(match, '');
+      };
+
+      /**
+       * Callback to rewrite the URL when a test is a string. Override it to suit your needs.
+       *
+       * @param {string} url The current URL.
+       * @param {string} match The matching test pattern.
+       * @param {string} testvalue The value of the test (without '?').
+       * @returns {string} The new URL.
+       */
+      this.whenString = function (url, match, testvalue) {
+        return url.replace(match, testvalue);
       };
 
       /**
@@ -101,6 +110,8 @@
             var test = tests[testname];
             if (typeof test === 'function' && test() || typeof test === 'boolean' && test) {
               templateUrl = self.whenTrue(templateUrl, match, testname);
+            } else if (typeof test === 'string' && test.length > 0) {
+              templateUrl = self.whenString(templateUrl, match, test);
             } else {
               templateUrl = self.whenFalse(templateUrl, match, testname);
             }

@@ -45,6 +45,10 @@ describe('adaptiveTemplatingProvider', function () {
     expect(typeof atp.whenFalse).toBe('function');
   });
 
+  it('has a whenString method', function () {
+    expect(typeof atp.whenString).toBe('function');
+  });
+
   it('has a rewriteUrl method', function () {
     expect(typeof atp.rewriteUrl).toBe('function');
   });
@@ -74,10 +78,12 @@ describe('adaptiveTemplatingProvider', function () {
     it('lists all registered tests', function () {
       atp.addTest('foo', true);
       atp.addTest('bar', false);
+      atp.addTest('foz', 'string');
       atp.addTest('baz', angular.noop);
       expect(atp.getTests()).toEqual({
         foo: true,
         bar: false,
+        foz: 'string',
         baz: angular.noop
       });
     });
@@ -111,6 +117,13 @@ describe('adaptiveTemplatingProvider', function () {
     it('removes the pattern', function () {
       var result = atp.whenFalse('foo.{bar}.baz', '{bar}', 'bar');
       expect(result).toBe('foo..baz')
+    });
+  });
+
+  describe('#whenString', function () {
+    it('removes the pattern', function () {
+      var result = atp.whenString('foo.{foz}.baz', '{foz}', 'string');
+      expect(result).toBe('foo.string.baz')
     });
   });
 
